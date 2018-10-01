@@ -1,7 +1,7 @@
 import Graphics
 
 example :: Form
-example = circle 50
+example = rectangle 100 100
 
 main::IO ()
 main = writeFile "graphic.svg" (toSVG example)

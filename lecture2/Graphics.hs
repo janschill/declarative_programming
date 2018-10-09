@@ -38,12 +38,15 @@ translatePoint ::  Float -> Float -> Point -> Point
 translatePoint xamount yamount (Point x y) = Point (x + xamount) (y + yamount)
 
 translateForm :: Float -> Float -> Form ->  Form
-translateForm xamount yamount (Rectangle p1 p2 style) = Rectangle (translatePoint xamount yamount p1) (translatePoint xamount yamount p2) style
-translateForm xamount yamount (Circle p radius style) = Circle (translatePoint xamount yamount p) radius style
+translateForm xamount yamount (Rectangle p1 p2 style) =
+  Rectangle (translatePoint xamount yamount p1) (translatePoint xamount yamount p2) style
+translateForm xamount yamount (Circle p radius style) =
+  Circle (translatePoint xamount yamount p) radius style
 
 translate :: Float -> Float -> Graphic -> Graphic
 translate _ _ Nil = Nil
-translate xamount yamount (Cons form graphics) = Cons (translateForm xamount yamount form) (translate xamount yamount graphics)
+translate xamount yamount (Cons form graphics) =
+  Cons (translateForm xamount yamount form) (translate xamount yamount graphics)
 
 {- Convert a style to the CSS property and set color as value -}
 styleToAttr :: Style -> String
@@ -51,18 +54,30 @@ styleToAttr (Style c) = "stroke=\"" ++ colorToString c ++ "\" " ++ "fill=\"" ++ 
 
 {- Convert data type Form to a SVG representation -}
 formToSVG :: Form -> String
-formToSVG (Rectangle (Point x1 y1) (Point x2 y2) s) = "<rect x=\"" ++ show x1 ++ "\" y=\"" ++ show y1 ++ "\" width=\"" ++ show (width (Point x1 y1) (Point x2 y2)) ++ "\" height=\"" ++ show (height (Point x1 y1) (Point x2 y2)) ++ "\"" ++ " " ++ styleToAttr s ++ "/>"
+formToSVG (Rectangle (Point x1 y1) (Point x2 y2) s) =
+  "<rect x=\"" ++ show x1
+  ++ "\" y=\"" ++ show y1
+  ++ "\" width=\"" ++ show (width (Point x1 y1) (Point x2 y2))
+  ++ "\" height=\"" ++ show (height (Point x1 y1) (Point x2 y2))
+  ++ "\"" ++ " " ++ styleToAttr s ++ "/>"
   where
     width :: Point -> Point -> Float
     width (Point x1 _) (Point x2 _) = abs (x1 - x2)
     height :: Point -> Point -> Float
     height (Point _ y1) (Point _ y2) = abs (y1 - y2)
 
-formToSVG (Circle (Point x y) r s) = "<circle cx=\"" ++ show x ++ "\" cy=\"" ++ show y ++ "\" r=\"" ++ show r ++ "\" " ++ styleToAttr s ++ "/>"
+formToSVG (Circle (Point x y) r s) =
+  "<circle cx=\"" ++ show x
+  ++ "\" cy=\"" ++ show y
+  ++ "\" r=\"" ++ show r
+  ++ "\" " ++ styleToAttr s ++ "/>"
 
 {- Wrap SVG tag around Graphic -}
 toSVG :: Graphic -> String
-toSVG graphic = "<svg width=\"500\" height=\"500\" xmlns=\"http://www.w3.org/2000/svg\">" ++ formToSVG backgroundRect ++ aux graphic ++"</svg>"
+toSVG graphic =
+  "<svg width=\"500\" height=\"500\" xmlns=\"http://www.w3.org/2000/svg\">"
+  ++ formToSVG backgroundRect ++ aux graphic
+  ++ "</svg>"
     where
       aux :: Graphic -> String
       aux Nil = ""
@@ -108,7 +123,8 @@ union (Box (Point x11 y11) (Point x12 y12)) (Box (Point x21 y21) (Point x22 y22)
 {- Get BoundingBox of a single Form -}
 boundingBoxForm :: Form -> BoundingBox
 boundingBoxForm (Rectangle p1 p2 _) = Box p1 p2
-boundingBoxForm (Circle point radius _) = Box (translatePoint (-radius) (-radius) point) (translatePoint radius radius point)
+boundingBoxForm (Circle point radius _) =
+  Box (translatePoint (-radius) (-radius) point) (translatePoint radius radius point)
 
 {- Get BoundingBox of a Graphic -}
 boundingBox :: Graphic -> BoundingBox

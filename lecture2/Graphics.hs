@@ -16,7 +16,7 @@ data Style = Style Color
 data Graphic = Nil | Cons Form Graphic
   deriving Show
 
-data BoundingBox = Box Point Point
+data BoundingBox = Nul | Box Point Point
   deriving Show
 
 {- Some default constants -}
@@ -65,7 +65,7 @@ toSVG :: Graphic -> String
 toSVG graphic = "<svg width=\"500\" height=\"500\" xmlns=\"http://www.w3.org/2000/svg\">" ++ formToSVG backgroundRect ++ aux graphic ++"</svg>"
     where
       aux :: Graphic -> String
-      aux (Cons form Nil) = formToSVG form
+      aux Nil = ""
       aux (Cons form graphic) = formToSVG form ++ aux graphic
 
 {- Generate a Graphic Rectangle -}
@@ -99,20 +99,21 @@ colored color (Cons form graphics) = Cons (applyColorOnForm color form) (colored
 
 {- Combine two BoundingBoxes -}
 union :: BoundingBox -> BoundingBox -> BoundingBox
-union (Box (Point x11 y11) (Point x12 y12)) (Box (Point x21 y21) (Point x22 y22)) = Box (Point (minimum [x11, x12, x21, x22]) (minimum [y11, y12, y21, y22])) (Point (maximum [x11, x12, x21, x22]) (maximum [y11, y12, y21, y22]))
+union box Nul = box
+union Nul box = box
+union (Box (Point x11 y11) (Point x12 y12)) (Box (Point x21 y21) (Point x22 y22)) =
+  Box (Point (minimum [x11, x12, x21, x22]) (minimum [y11, y12, y21, y22]))
+      (Point (maximum [x11, x12, x21, x22]) (maximum [y11, y12, y21, y22]))
 
 {- Get BoundingBox of a single Form -}
 boundingBoxForm :: Form -> BoundingBox
 boundingBoxForm (Rectangle p1 p2 _) = Box p1 p2
-boundingBoxForm (Circle (Point x y) radius _) = Box (Point (x - radius) (y - radius)) (Point (x + radius) (y + radius))
+boundingBoxForm (Circle point radius _) = Box (translatePoint (-radius) (-radius) point) (translatePoint radius radius point)
 
 {- Get BoundingBox of a Graphic -}
 boundingBox :: Graphic -> BoundingBox
-boundingBox (Cons form graphic) = aux (boundingBoxForm form) graphic
-    where
-      aux :: BoundingBox -> Graphic -> BoundingBox
-      aux bb Nil = bb
-      aux bb (Cons form graphic) = aux (union bb (boundingBoxForm form)) graphic
+boundingBox Nil = Nul
+boundingBox (Cons form graphic) = union (boundingBoxForm form) (boundingBox graphic)
 
 {- Get x-axis value of BoundingBox -}
 rightBoundingBorder :: BoundingBox -> Float
@@ -124,5 +125,5 @@ leftBoundingBorder (Box (Point x _) _) = x
 
 {- Translate second Graphic on x-axis until it sits next to the BoundingBox of first Graphic  -}
 (|||) :: Graphic -> Graphic -> Graphic
-(|||) g1 g2 | (rightBoundingBorder (boundingBox g1)) > (leftBoundingBorder (boundingBox g2)) = (<+>) g1 (translate ((rightBoundingBorder (boundingBox g1)) - (leftBoundingBorder (boundingBox g2))) 0 g2)
-            | otherwise = (<+>) g1 g2
+(|||) g1 g2 =
+  (<+>) g1 (translate ((rightBoundingBorder (boundingBox g1)) - (leftBoundingBorder (boundingBox g2))) 0 g2)

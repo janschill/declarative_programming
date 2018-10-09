@@ -1,7 +1,7 @@
 import Graphics
 
 trafficLightContainer :: Graphic
-trafficLightContainer = Cons (Rectangle (Point 0 0) (Point 400 200) (Style Black)) Nil
+trafficLightContainer = Cons (Rectangle (Point 0 0) (Point 500 200) (Style Black)) Nil
 
 redLight :: Graphic
 redLight = Cons (Circle (Point 100 100) 50 (Style Red)) Nil

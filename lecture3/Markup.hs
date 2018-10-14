@@ -3,6 +3,7 @@ module Markup where
 type TextNode = String
 type Attribute = (String, String)
 data Tag = Tag String [Attribute] TextNode XML
+  deriving Show
 type XML = [Tag]
 
 attributeToString :: Attribute -> String

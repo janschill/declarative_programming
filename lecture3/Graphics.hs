@@ -1,5 +1,7 @@
 module Graphics where
 
+import Markup
+
 {- Data definitions -}
 data Point = Point Float Float
   deriving Show
@@ -47,34 +49,29 @@ translate _ _ [] = []
 translate xamount yamount graphic = map (translateForm xamount yamount) graphic
 
 {- Convert a style to the CSS property and set color as value -}
-styleToAttr :: Style -> String
-styleToAttr (Style c) = "stroke=\"" ++ colorToString c ++ "\" " ++ "fill=\"" ++ colorToString c ++ "\" "
+styleToAttr :: Style -> [(String, String)]
+styleToAttr (Style c) = [("stroke", colorToString c), ("fill", colorToString c)]
 
-{- Convert data type Form to a SVG representation -}
-formToSVG :: Form -> String
-formToSVG (Rectangle (Point x1 y1) (Point x2 y2) s) =
-  "<rect x=\"" ++ show x1
-  ++ "\" y=\"" ++ show y1
-  ++ "\" width=\"" ++ show (width (Point x1 y1) (Point x2 y2))
-  ++ "\" height=\"" ++ show (height (Point x1 y1) (Point x2 y2))
-  ++ "\"" ++ " " ++ styleToAttr s ++ "/>"
+formToXML :: Form -> XML
+formToXML (Rectangle (Point x1 y1) (Point x2 y2) s) =
+  [Tag "rectangle" ([
+    ("x", show x1), ("y", show y1),
+    ("width", show (width (Point x1 y1) (Point x2 y2))),
+    ("height", show (height (Point x1 y1) (Point x2 y2)))] ++ styleToAttr s) "" []]
   where
     width :: Point -> Point -> Float
     width (Point x1 _) (Point x2 _) = abs (x1 - x2)
     height :: Point -> Point -> Float
     height (Point _ y1) (Point _ y2) = abs (y1 - y2)
-
-formToSVG (Circle (Point x y) r s) =
-  "<circle cx=\"" ++ show x
-  ++ "\" cy=\"" ++ show y
-  ++ "\" r=\"" ++ show r
-  ++ "\" " ++ styleToAttr s ++ "/>"
+formToXML (Circle (Point x y) r s) =
+  [Tag "circle" ([("cx", show x), ("cy", show y), ("r", show r)] ++ styleToAttr s) "" []]
 
 {- Wrap SVG tag around Graphic -}
-toSVG :: Graphic -> String
+toSVG :: Graphic -> XML
 toSVG graphic =
-  "<svg width=\"500\" height=\"500\" xmlns=\"http://www.w3.org/2000/svg\">"
-  ++ formToSVG backgroundRect ++ (foldr (++) "" (map formToSVG graphic)) ++ "</svg>"
+  [Tag "svg" [
+    ("width", "500"), ("height", "500"),
+    ("xmlns", "http://www.w3.org/2000/svg")] "" (foldr (++) [] (map formToXML graphic))]
 
 {- Generate a Graphic Rectangle -}
 rectangle :: Float -> Float -> Graphic
@@ -90,8 +87,6 @@ single form = [form]
 
 {- Combine two Graphics to a single one -}
 (<+>) :: Graphic -> Graphic -> Graphic
--- (<+>) graphic [] = graphic
--- (<+>) [] graphic = graphic
 (<+>) g1 g2 = g1 ++ g2
 
 {- Apply a color onto a Form -}

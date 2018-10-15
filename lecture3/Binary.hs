@@ -14,7 +14,7 @@ values Empty = []
 values (Node bt1 value bt2) = values bt1 ++ [value] ++ values bt2
 
 mapTree :: (a -> b) -> BinTree a -> BinTree b
-mapTree fun Empty = Empty
+mapTree _ Empty = Empty
 mapTree fun (Node bt1 value bt2) = Node (mapTree fun bt1) (fun value) (mapTree fun bt2)
 
 levels :: BinTree a -> [[a]]

@@ -71,7 +71,7 @@ toSVG :: Graphic -> XML
 toSVG graphic =
   [Tag "svg" [
     ("width", "500"), ("height", "500"),
-    ("xmlns", "http://www.w3.org/2000/svg")] "" (foldr (++) [] (map formToXML graphic))]
+    ("xmlns", "http://www.w3.org/2000/svg")] "" (concat (map formToXML graphic))]
 
 {- Generate a Graphic Rectangle -}
 rectangle :: Float -> Float -> Graphic

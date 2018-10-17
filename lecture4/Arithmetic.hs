@@ -1,3 +1,5 @@
+module Arithmetic where
+
 data BinOp = Add | Sub | Mul | Div
 data Expr
   = BinApp BinOp Expr Expr

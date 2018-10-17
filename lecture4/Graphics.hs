@@ -2,7 +2,6 @@ module Graphics where
 
 import Markup
 
-{- Data definitions -}
 data Point = Point Float Float
   deriving Show
 
@@ -20,7 +19,6 @@ type Graphic = [Form]
 data BoundingBox = Nil | Box Point Point
   deriving Show
 
-{- Some default constants -}
 backgroundRect :: Form
 backgroundRect = Rectangle (Point 0 0) (Point 500 500) (Style Gray)
 
@@ -36,19 +34,18 @@ colorToString Yellow = "yellow"
 colorToString Gray = "gray"
 
 translatePoint ::  Float -> Float -> Point -> Point
-translatePoint xamount yamount (Point x y) = Point (x + xamount) (y + yamount)
+translatePoint xAmount yAmount (Point x y) = Point (x + xAmount) (y + yAmount)
 
 translateForm :: Float -> Float -> Form ->  Form
-translateForm xamount yamount (Rectangle p1 p2 style) =
-  Rectangle (translatePoint xamount yamount p1) (translatePoint xamount yamount p2) style
-translateForm xamount yamount (Circle p radius style) =
-  Circle (translatePoint xamount yamount p) radius style
+translateForm xAmount yAmount (Rectangle p1 p2 style) =
+  Rectangle (translatePoint xAmount yAmount p1) (translatePoint xAmount yAmount p2) style
+translateForm xAmount yAmount (Circle p radius style) =
+  Circle (translatePoint xAmount yAmount p) radius style
 
 translate :: Float -> Float -> Graphic -> Graphic
 translate _ _ [] = []
-translate xamount yamount graphic = map (translateForm xamount yamount) graphic
+translate xAmount yAmount graphic = map (translateForm xAmount yAmount) graphic
 
-{- Convert a style to the CSS property and set color as value -}
 styleToAttr :: Style -> [(String, String)]
 styleToAttr (Style c) = [("stroke", colorToString c), ("fill", colorToString c)]
 
@@ -66,24 +63,20 @@ formToXML (Rectangle (Point x1 y1) (Point x2 y2) s) =
 formToXML (Circle (Point x y) r s) =
   Tree (Element (Pair "circle" ([("cx", show x), ("cy", show y), ("r", show r)] ++ styleToAttr s) [])) []
 
-{- Wrap SVG tag around Graphic -}
 toSVG :: Graphic -> Xml
 toSVG graphic =
   Tree (Element (Pair "svg" [
     ("width", "500"), ("height", "500"),
     ("xmlns", "http://www.w3.org/2000/svg")] (map formToXML graphic))) []
 
-{- Generate a Graphic Rectangle -}
+single :: Form -> Graphic
+single form = [form]
+
 rectangle :: Float -> Float -> Graphic
 rectangle width height = single (Rectangle (Point 50 50) (Point width height) defaultStyle)
 
-{- Generate a Graphic Circle -}
 circle :: Float -> Graphic
 circle radius = single (Circle (translatePoint radius radius (Point 50 50)) radius defaultStyle)
-
-{- Convert Form to Graphic -}
-single :: Form -> Graphic
-single form = [form]
 
 {- Combine two Graphics to a single one -}
 (<+>) :: Graphic -> Graphic -> Graphic
@@ -132,4 +125,4 @@ leftBoundingBorder (Box (Point x _) _) = x
 {- Translate second Graphic on x-axis until it sits next to the BoundingBox of first Graphic  -}
 (|||) :: Graphic -> Graphic -> Graphic
 (|||) g1 g2 =
-  (<+>) g1 (translate ((rightBoundingBorder (boundingBox g1)) - (leftBoundingBorder (boundingBox g2))) 0 g2)
+  (<+>) g1 (translate (rightBoundingBorder (boundingBox g1) - leftBoundingBorder (boundingBox g2)) 0 g2)

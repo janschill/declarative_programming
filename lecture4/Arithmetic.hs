@@ -28,17 +28,22 @@ safeDiv x 0 = Nothing
 safeDiv x y = Just (x `div` y)
 
 andThen :: Maybe a -> (a -> Maybe b) -> Maybe b
-andThen (Just x) fun = fun x
+andThen (Just x) f = f x
 
 eval :: Expr -> Maybe Int
 eval (Num num) = Just num
 eval binApp =
   case binApp of
-    BinApp Add (Num num) expr -> eval expr `andThen` safeAdd num
-    BinApp Add expr (Num num) -> eval expr `andThen` safeAdd num
-    BinApp Sub (Num num) expr -> eval expr `andThen` safeSub num
-    BinApp Sub expr (Num num) -> eval expr `andThen` safeSub num
-    BinApp Mul (Num num) expr -> eval expr `andThen` safeMul num
-    BinApp Mul expr (Num num) -> eval expr `andThen` safeMul num
-    BinApp Div (Num num) expr -> eval expr `andThen` safeDiv num
-    BinApp Div expr (Num num) -> eval expr `andThen` safeDiv num
+    BinApp Add expr1 expr2 -> eval' expr1 expr2 safeAdd
+    BinApp Sub expr1 expr2 -> eval' expr1 expr2 safeSub
+    BinApp Mul expr1 expr2 -> eval' expr1 expr2 safeMul
+    BinApp Div expr1 expr2 -> eval' expr1 expr2 safeDiv
+    where
+      eval' :: Expr -> Expr -> (Int -> Int -> Maybe b) -> Maybe b
+      eval' (Num num) expr f = eval expr `andThen` f num
+      eval' expr (Num num) f = eval expr `andThen` f num
+
+-- map (maybeMap (+1)) [Just 5,Just 1] -> [Just 6,Just 2]
+maybeMap :: (a -> b) -> Maybe a -> Maybe b
+maybeMap _ Nothing = Nothing
+maybeMap f (Just x) = Just (f x)

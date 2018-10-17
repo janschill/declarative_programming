@@ -2,3 +2,5 @@
 *.pdf
 *.code-workspace
 **/Feedback.hs
+*.svg
+*.html

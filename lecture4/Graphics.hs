@@ -122,7 +122,7 @@ rightBoundingBorder (Box _ (Point x _)) = x
 leftBoundingBorder :: BoundingBox -> Float
 leftBoundingBorder (Box (Point x _) _) = x
 
-{- Translate second Graphic on x-axis until it sits next to the BoundingBox of first Graphic  -}
+{- Translate second Graphic on x-axis until it sits next to the BoundingBox of first Graphic -}
 (|||) :: Graphic -> Graphic -> Graphic
 (|||) g1 g2 =
   (<+>) g1 (translate (rightBoundingBorder (boundingBox g1) - leftBoundingBorder (boundingBox g2)) 0 g2)

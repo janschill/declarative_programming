@@ -1,13 +1,10 @@
 module Markup where
 
 data Tree a = Tree a [Tree a]
-  deriving Show
 type Name = String
 type Attribute = (String, String)
 data Tag = Pair Name [Attribute] [Xml] | Empty Name [Attribute]
-  deriving Show
 data XmlNode = Element Tag | TextNode String
-  deriving Show
 type Xml = Tree XmlNode
 
 attributeToString :: Attribute -> String

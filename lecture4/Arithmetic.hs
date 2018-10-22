@@ -9,12 +9,13 @@ expr1 = BinApp Add (BinApp Mul (Num 2) (Num 3)) (Num 4)
 
 showExpr :: Expr -> String
 showExpr (Num num) = show num
-showExpr binApp =
-  case binApp of
-    BinApp Add expr1 expr2 -> "(" ++ showExpr expr1 ++ " + " ++ showExpr expr2 ++ ")"
-    BinApp Sub expr1 expr2 -> "(" ++ showExpr expr1 ++ " - " ++ showExpr expr2 ++ ")"
-    BinApp Mul expr1 expr2 -> "(" ++ showExpr expr1 ++ " * " ++ showExpr expr2 ++ ")"
-    BinApp Div expr1 expr2 -> "(" ++ showExpr expr1 ++ " / " ++ showExpr expr2 ++ ")"
+showExpr (BinApp binOp expr1 expr2) = "(" ++ showExpr expr1 ++ operation binOp ++ showExpr expr2 ++ ")"
+  where
+    operation :: BinOp -> String
+    operation Add = " + "
+    operation Sub = " - "
+    operation Mul = " * "
+    operation Div = " / "
 
 safeAdd :: Int -> Int -> Maybe Int
 safeAdd x y = Just (x + y)

@@ -43,7 +43,6 @@ translateForm xAmount yAmount (Circle p radius style) =
   Circle (translatePoint xAmount yAmount p) radius style
 
 translate :: Float -> Float -> Graphic -> Graphic
-translate _ _ [] = []
 translate xAmount yAmount graphic = map (translateForm xAmount yAmount) graphic
 
 styleToAttr :: Style -> [(String, String)]
@@ -89,7 +88,6 @@ applyColorOnForm color (Circle p radius _) = Circle p radius (Style color)
 
 {- Apply a color onto a Graphic -}
 colored :: Color -> Graphic -> Graphic
-colored color [] = []
 colored color graphic = map (applyColorOnForm color) graphic
 
 {- Combine two BoundingBoxes -}
@@ -111,8 +109,7 @@ boundingBoxForm (Circle point radius _) =
 
 {- Get BoundingBox of a Graphic -}
 boundingBox :: Graphic -> BoundingBox
-boundingBox [] = Nil
-boundingBox graphic = foldr union Nil (map boundingBoxForm graphic)
+boundingBox graphic = unions (map boundingBoxForm graphic)
 
 {- Get x-axis value of BoundingBox -}
 rightBoundingBorder :: BoundingBox -> Float

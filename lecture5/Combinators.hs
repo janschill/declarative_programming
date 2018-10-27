@@ -1,5 +1,6 @@
 module Combinators where
 
+-- (.)
 compose :: (b -> c) -> (a -> b) -> a -> c
 compose f g x = f (g x)
 -- compose f g   = \x -> f (g x)
@@ -8,10 +9,11 @@ compose f g x = f (g x)
 
 fun1 :: (a -> b -> c) -> (b -> a) -> b -> b -> c
 -- fun1 f g = \x y -> f (g x) y
-fun1 f g = (flip f g) . id
+fun1 f g = f . g
 
 fun2 :: (a -> b) -> (b -> c) -> a -> c
-fun2 = \f g x -> g (f x)
+-- fun2 = \f g x -> g (f x)
+fun2 = flip (.)
 
 fun3 :: b -> (b -> c) -> c
 -- fun3 = flip id

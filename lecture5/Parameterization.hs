@@ -1,6 +1,6 @@
 module Parameterization where
 
-import Prelude hiding (id, const, flip, IO)
+import Prelude hiding (id, const, flip, IO, length)
 
 id :: a -> a
 id x = x
@@ -19,9 +19,15 @@ on f g x y = f (g x) (g y)
 
 -- Examples
 
-length' :: [a] -> Int
-length' = foldr (const (1+)) 0
+-- const
+length :: [a] -> Int
+length = foldr (const (1+)) 0
 
+-- flip
+divideInverse :: Int -> Int -> Int
+divideInverse x y = flip div x y
+
+-- on
 data IO = I | O
   deriving Show
 
@@ -32,5 +38,4 @@ ioToInt I = 1
 sumToString :: Int -> Int -> String
 sumToString x y = show (x + y)
 
-divideInverse :: Int -> Int -> Int
-divideInverse x y = flip div x y
+exampleOn = on sumToString ioToInt I I

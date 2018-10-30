@@ -32,8 +32,8 @@ fun3 = \x f -> f x
 fun4 :: (b -> c) -> (a1 -> a2 -> b) -> a1 -> a2 -> c
 -- fun4 f g = ((.) f) . g
 -- fun4 f g = compose (compose f) g
--- fun4 f g = \x -> compose (compose f) g x
--- fun4 f g = \x -> compose f (g x)
+-- fun4 f g = \x   -> compose (compose f) g x
+-- fun4 f g = \x   -> compose f (g x)
 -- fun4 f g = \x y -> compose f (g x) y
 -- fun4 f g = \x y -> f ((g x) y)
 -- fun4 f g = \x y -> f (g x y)

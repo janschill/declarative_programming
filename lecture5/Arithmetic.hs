@@ -81,7 +81,7 @@ eval1 (BinApp op e1 e2) =
     Right x2 -> Right (applyOp op x1 x2)
 
 andThen' :: Either c a -> (a -> Either c b) -> Either c b
-andThen' (Left x) f = Left x
+andThen' (Left x) _ = Left x
 andThen' (Right x) f = f x
 
 eval2 :: Expr -> Either Error Int

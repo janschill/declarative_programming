@@ -25,7 +25,7 @@ length = foldr (const (1+)) 0
 
 -- flip
 divideInverse :: Int -> Int -> Int
-divideInverse x y = flip div x y
+divideInverse = flip div
 
 -- on
 data IO = I | O

@@ -14,13 +14,3 @@ whole = const True
 
 hits :: Region -> Point -> Bool
 hits region = region
-
-p1 :: Point
-p1 = Point 0 0
-
-p2 :: Point
-p2 = Point 1 1
-
-r1 :: Region
-r1 (Point 1 1) = True
-r1 _ = False

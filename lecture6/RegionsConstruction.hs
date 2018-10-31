@@ -16,9 +16,8 @@ rs = [r1, r2]
 pyth :: Point -> Point -> Float
 pyth (Point xp yp) (Point xc yc) = sqrt (((xp - xc) ^ 2) + ((yp - yc) ^ 2))
 
--- nicht richtig
 circle :: Float -> Region
-circle r = \p -> (pyth p (Point 0 0)) <= r
+circle r = \p -> pyth p (Point 0 0) <= r
 
 half :: Float -> Float
 half n = n / 2

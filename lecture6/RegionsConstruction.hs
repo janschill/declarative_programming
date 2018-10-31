@@ -47,7 +47,7 @@ union :: [Region] -> Region
 union = foldr (\/) (\p -> False)
 
 translate :: Region -> Float -> Float -> Region
-translate r x' y' = \p -> r
+translate r x' y' = \(Point x y) -> r (Point (x-x') (y-y'))
 
 ring :: Float -> Float -> Region
 ring cr1 cr2 = outside (circle cr1) /\ circle cr2

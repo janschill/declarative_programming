@@ -2,17 +2,6 @@ module RegionsConstruction where
 
 import RegionsBasics
 
-p1 :: Point
-p1 = Point 0 0
-p2 :: Point
-p2 = Point 6 6
-r1 :: Region
-r1 = rectangle 5 5
-r2 :: Region
-r2 = rectangle 10 10
-rs :: [Region]
-rs = [r1, r2]
-
 circle :: Float -> Region
 circle r = \(Point x y) ->
   x <=  r &&

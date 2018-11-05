@@ -40,10 +40,10 @@ r1 /\ r2 = \p -> r1 p && r2 p
 r1 \/ r2 = \p -> r1 p || r2 p
 
 intersect :: [Region] -> Region
-intersect = foldr (/\) (\p -> True)
+intersect = foldr (/\) (const True)
 
 union :: [Region] -> Region
-union = foldr (\/) (\p -> False)
+union = foldr (\/) (const False)
 
 translate :: Region -> Float -> Float -> Region
 translate r x' y' = \(Point x y) -> r (Point (x-x') (y-y'))
